@@ -29,7 +29,7 @@ class MainViewController: UIViewController, LineChartDelegate {
         view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-80-[label]", options: [], metrics: nil, views: views))
         
         // simple arrays
-        let data: [CGFloat] = [18, 12, 10, 30]
+        let data: [CGFloat] = [20, 12, 10, 30]
         let data2: [CGFloat] = [1, 3, 5, 13, 17, 20]
         
         // simple line with custom x axis labels
@@ -48,8 +48,8 @@ class MainViewController: UIViewController, LineChartDelegate {
         lineChart.y.labels.visible = false
         lineChart.addLine(data)
         lineChart.min = 10
-        lineChart.max = 15
-        lineChart.selectedValue = 18
+        lineChart.max = 20
+        lineChart.selectedValue = 20
 
         // lineChart.addLine(data2)
         
