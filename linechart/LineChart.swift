@@ -284,6 +284,7 @@ open class LineChart: UIView {
      * Highlight data points at index.
      */
     fileprivate func highlightDataPoints(_ index: Int) {
+        return
         for (lineIndex, dotsData) in dotsDataStore.enumerated() {
             // make all dots white again
             for dot in dotsData {
@@ -641,14 +642,14 @@ open class LineChart: UIView {
      */
     fileprivate func drawXLabels() {
         let xAxisData = self.dataStore[0]
-        let y = self.bounds.height - x.axis.inset
+        let y = self.bounds.height - 15
         let (_, _, step) = x.linear.ticks(xAxisData.count)
         let width = x.scale(step)
         
         var text: String
         for (index, _) in xAxisData.enumerated() {
             let xValue = self.x.scale(CGFloat(index)) + x.axis.inset - (width / 2)
-            let label = UILabel(frame: CGRect(x: xValue, y: y, width: width, height: x.axis.inset))
+            let label = UILabel(frame: CGRect(x: xValue, y: y, width: width, height: 15))
             label.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.caption2)
             label.textAlignment = .center
             if (x.labels.values.count != 0) {
