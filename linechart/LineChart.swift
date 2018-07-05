@@ -96,7 +96,15 @@ open class LineChart: UIView {
     
     open var x: Coordinate = Coordinate()
     open var y: Coordinate = Coordinate()
-
+    
+    open var minValue = CGFloat()
+    open var maxValue = CGFloat()
+    
+    open var min = CGFloat()
+    open var max = CGFloat()
+   
+    open var selectedValue = CGFloat()
+   
     
     // values calculated on init
     fileprivate var drawingHeight: CGFloat = 0 {
@@ -106,6 +114,7 @@ open class LineChart: UIView {
             y.linear = LinearScale(domain: [min, max], range: [0, drawingHeight])
             y.scale = y.linear.scale()
             y.ticks = y.linear.ticks(Int(y.grid.count))
+            
         }
     }
     fileprivate var drawingWidth: CGFloat = 0 {
@@ -143,6 +152,8 @@ open class LineChart: UIView {
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
+        
+       
         self.backgroundColor = UIColor.clear
     }
 
@@ -155,6 +166,8 @@ open class LineChart: UIView {
     }
     
     override open func draw(_ rect: CGRect) {
+        
+        self.x.axis.inset = self.bounds.width/5
         
         if removeAll {
             let context = UIGraphicsGetCurrentContext()
@@ -196,6 +209,7 @@ open class LineChart: UIView {
         
         // draw lines
         for (lineIndex, _) in dataStore.enumerated() {
+           
             
             drawLine(lineIndex)
             
@@ -296,21 +310,44 @@ open class LineChart: UIView {
     fileprivate func drawDataDots(_ lineIndex: Int) {
         var dotLayers: [DotCALayer] = []
         var data = self.dataStore[lineIndex]
-        
+        print(lineIndex)
         for index in 0..<data.count {
+            
+            let constant:CGFloat = (self.bounds.height/getMaximumValue())
+            let maxValue:CGFloat = constant * (getMaximumValue() - max)
+            let minValue:CGFloat = constant * (getMaximumValue() - min)
+            
             let xValue = self.x.scale(CGFloat(index)) + x.axis.inset - dots.outerRadius/2
             let yValue = self.bounds.height - self.y.scale(data[index]) - y.axis.inset - dots.outerRadius/2
             
             // draw custom layer with another layer in the center
             let dotLayer = DotCALayer()
-            dotLayer.dotInnerColor = colors[lineIndex]
             dotLayer.innerRadius = dots.innerRadius
-            dotLayer.backgroundColor = dots.color.cgColor
+            let label = UILabel.init(frame: CGRect.init(x: xValue, y: yValue - 15, width: 35, height: 15))
+            label.text = "\(self.dataStore[0][index])"
+            label.numberOfLines = 0
+            label.adjustsFontSizeToFitWidth = true
+            label.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.caption2)
+            label.textAlignment = .center
+            self.addSubview(label)
+           
+            
+            if (yValue > maxValue)  && (yValue < minValue){
+                
+                dotLayer.backgroundColor = UIColor.green.cgColor
+                dotLayer.dotInnerColor = UIColor.green
+            }
+            else{
+                dotLayer.backgroundColor = UIColor.red.cgColor
+                dotLayer.dotInnerColor = UIColor.red
+            }
+        
+            //dotLayer.backgroundColor = dots.color.cgColor
             dotLayer.cornerRadius = dots.outerRadius / 2
             dotLayer.frame = CGRect(x: xValue, y: yValue, width: dots.outerRadius, height: dots.outerRadius)
             self.layer.addSublayer(dotLayer)
             dotLayers.append(dotLayer)
-            
+        
             // animate opacity
             if animation.enabled {
                 let anim = CABasicAnimation(keyPath: "opacity")
@@ -336,14 +373,76 @@ open class LineChart: UIView {
         // draw x-axis
         x.axis.color.setStroke()
         let y0 = height - self.y.scale(0) - y.axis.inset
-        path.move(to: CGPoint(x: x.axis.inset, y: y0))
-        path.addLine(to: CGPoint(x: width - x.axis.inset, y: y0))
+        path.move(to: CGPoint(x: 15, y: y0))
+        path.addLine(to: CGPoint(x: width - 15, y: y0))
         path.stroke()
         // draw y-axis
-        y.axis.color.setStroke()
-        path.move(to: CGPoint(x: x.axis.inset, y: height - y.axis.inset))
-        path.addLine(to: CGPoint(x: x.axis.inset, y: y.axis.inset))
-        path.stroke()
+        _ = UIBezierPath()
+        UIColor.red.setStroke()
+        
+        
+        
+        
+        //18 min value
+        let constant:CGFloat = (self.bounds.height/getMaximumValue())
+        if max == 0{
+            let minValue:CGFloat = constant * (getMaximumValue() - min)
+            
+            let view2 = UINib(nibName: "barView", bundle: nil).instantiate(withOwner: nil, options: nil)[0] as! barView
+            view2.fHeight.constant = 0
+            view2.sHeight.constant =   minValue
+            let view = UIView.init(frame: CGRect.init(x: 0, y: 0, width: 20, height: height - y.axis.inset))
+            view.addSubview(view2)
+            view2.frame = view.bounds
+            self.addSubview(view)
+        }else{
+            let maxValue:CGFloat = constant * (getMaximumValue() - max)
+            let minValue:CGFloat = constant * (getMaximumValue() - min)
+            
+            let view2 = UINib(nibName: "barView", bundle: nil).instantiate(withOwner: nil, options: nil)[0] as! barView
+            view2.fHeight.constant = maxValue
+            view2.sHeight.constant =   minValue - maxValue
+            let view = UIView.init(frame: CGRect.init(x: 0, y: 0, width: 20, height: height - y.axis.inset))
+            view.addSubview(view2)
+            view2.frame = view.bounds
+            self.addSubview(view)
+        }
+        
+        
+      
+        return
+        
+        
+        
+        
+        
+
+        let redView = UIView.init(frame: CGRect.init(x: 0, y: 0, width: 20, height: minValue))
+        redView.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
+        redView.backgroundColor = UIColor.red
+        
+        let lblVal = UILabel.init(frame: CGRect.init(x: redView.center.x/2, y: 0, width: 20, height: 20))
+        lblVal.center = redView.center
+        //lblVal.text = "H"
+        lblVal.textColor = UIColor.white
+        redView.addSubview(lblVal)
+        self.addSubview(redView)
+        
+        
+        let greenView = UIView.init(frame: CGRect.init(x: 0, y: (redView.bounds.height), width: 20, height: (self.bounds.height - minValue - y.axis.inset)))
+        greenView.backgroundColor = UIColor.green
+        let lblVal2 = UILabel.init(frame: CGRect.init(x:greenView.center.x/2 , y: 0, width: 20, height: 20))
+       
+        //lblVal2.text = "G"
+        lblVal2.textColor = UIColor.black
+        greenView.addSubview(lblVal2)
+        self.addSubview(greenView)
+        
+        
+      
+        
+        
+
     }
     
     
@@ -385,6 +484,7 @@ open class LineChart: UIView {
      */
     fileprivate func drawLine(_ lineIndex: Int) {
         
+       
         var data = self.dataStore[lineIndex]
         let path = UIBezierPath()
         
@@ -452,17 +552,41 @@ open class LineChart: UIView {
      * Draw x grid.
      */
     fileprivate func drawXGrid() {
-        x.grid.color.setStroke()
-        let path = UIBezierPath()
-        var x1: CGFloat
-        let y1: CGFloat = self.bounds.height - y.axis.inset
-        let y2: CGFloat = y.axis.inset
-        let (start, stop, step) = self.x.ticks
-        for i in stride(from: start, through: stop, by: step){
-            x1 = self.x.scale(i) + x.axis.inset
-            path.move(to: CGPoint(x: x1, y: y1))
-            path.addLine(to: CGPoint(x: x1, y: y2))
+        
+        //
+        
+        let i = dataStore[0].index(of: selectedValue)
+        if i == nil{
+            return
         }
+        selectedValue = dataStore[0][i!]
+        
+       
+        
+        
+        
+        let xValue = self.x.scale(CGFloat(i!)) + x.axis.inset
+        let yValue = self.bounds.height - self.y.scale(dataStore[0][i!]) - y.axis.inset - dots.outerRadius/2
+        
+        
+        let constant:CGFloat = (self.bounds.height/getMaximumValue())
+        let maxValue:CGFloat = constant * (getMaximumValue() - max)
+        let minValue:CGFloat = constant * (getMaximumValue() - min)
+        if (yValue > maxValue)  && (yValue < minValue){
+            
+            UIColor.green.setStroke()
+        }
+        else{
+            UIColor.red.setStroke()
+        }
+        
+        let path = UIBezierPath()
+        let y2: CGFloat = y.axis.inset
+        path.move(to: CGPoint(x: xValue, y: yValue))
+        path.addLine(to: CGPoint(x:xValue, y: self.bounds.height - y2))
+        path.lineWidth = 3
+        let pattern: [CGFloat] = [5.0, 5.0]
+        path.setLineDash(pattern, count: 2, phase: 0.0)
         path.stroke()
     }
     
@@ -474,16 +598,29 @@ open class LineChart: UIView {
     fileprivate func drawYGrid() {
         self.y.grid.color.setStroke()
         let path = UIBezierPath()
-        let x1: CGFloat = x.axis.inset
-        let x2: CGFloat = self.bounds.width - x.axis.inset
+        let x1: CGFloat = 15
+        let x2: CGFloat = self.bounds.width - 15
         var y1: CGFloat
-        let (start, stop, step) = self.y.ticks
-        for i in stride(from: start, through: stop, by: step){
-            y1 = self.bounds.height - self.y.scale(i) - y.axis.inset
-            path.move(to: CGPoint(x: x1, y: y1))
-            path.addLine(to: CGPoint(x: x2, y: y1))
-        }
+        let (_, _, _) = self.y.ticks
+        let constant:CGFloat = (self.bounds.height/getMaximumValue())
+        y1 = constant * (getMaximumValue() - min)
+        path.move(to: CGPoint(x: x1, y: y1))
+        
+        path.addLine(to: CGPoint(x: x2, y: y1))
+        path.lineWidth = 3
+        let pattern: [CGFloat] = [5.0, 5.0]
+        path.setLineDash(pattern, count: 2, phase: 0.0)
         path.stroke()
+        
+        
+        y1 = constant * (getMaximumValue() - max)
+        path.move(to: CGPoint(x: x1, y: y1))
+        
+        path.addLine(to: CGPoint(x: x2, y: y1))
+        
+        path.lineWidth = 3
+        path.stroke()
+
     }
     
     
@@ -492,8 +629,9 @@ open class LineChart: UIView {
      * Draw grid.
      */
     fileprivate func drawGrid() {
-        drawXGrid()
+       
         drawYGrid()
+        drawXGrid()
     }
     
     
@@ -548,6 +686,7 @@ open class LineChart: UIView {
      */
     open func addLine(_ data: [CGFloat]) {
         self.dataStore.append(data)
+       
         self.setNeedsDisplay()
     }
     

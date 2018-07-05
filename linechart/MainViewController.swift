@@ -14,6 +14,10 @@ class MainViewController: UIViewController, LineChartDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let text = UITextField.init(frame: CGRect.init(x: 0, y: 0, width: 155, height: 30))
+        text.center = self.view.center
+        
+        
         var views: [String: AnyObject] = [:]
         
         label.text = "..."
@@ -25,22 +29,29 @@ class MainViewController: UIViewController, LineChartDelegate {
         view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-80-[label]", options: [], metrics: nil, views: views))
         
         // simple arrays
-        let data: [CGFloat] = [3, 4, -2, 11, 13, 15]
+        let data: [CGFloat] = [18, 12, 10, 30]
         let data2: [CGFloat] = [1, 3, 5, 13, 17, 20]
         
         // simple line with custom x axis labels
-        let xLabels: [String] = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
+        let xLabels: [String] = ["Jan", "Feb", "Mar", "Apr"]
         
         lineChart = LineChart()
         lineChart.animation.enabled = true
-        lineChart.area = true
+        lineChart.area = false
         lineChart.x.labels.visible = true
+        
         lineChart.x.grid.count = 5
         lineChart.y.grid.count = 5
+        lineChart.x.grid.visible = true
+        lineChart.y.grid.visible = true
         lineChart.x.labels.values = xLabels
-        lineChart.y.labels.visible = true
+        lineChart.y.labels.visible = false
         lineChart.addLine(data)
-        lineChart.addLine(data2)
+        lineChart.min = 10
+        lineChart.max = 15
+        lineChart.selectedValue = 18
+
+        // lineChart.addLine(data2)
         
         lineChart.translatesAutoresizingMaskIntoConstraints = false
         lineChart.delegate = self
