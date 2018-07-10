@@ -12,7 +12,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="barView" customModule="linechart" customModuleProvider="target">
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="barView" customModule="BioMark" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="81" height="200"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
@@ -49,7 +49,6 @@
                     <constraints>
                         <constraint firstAttribute="bottom" secondItem="a4v-2b-JUV" secondAttribute="bottom" id="4Yb-Fx-n2u"/>
                         <constraint firstItem="a4v-2b-JUV" firstAttribute="leading" secondItem="Asy-hj-Sh8" secondAttribute="leading" id="fbC-uU-3fT"/>
-                        <constraint firstAttribute="height" constant="60" id="kP5-pk-e24"/>
                         <constraint firstItem="a4v-2b-JUV" firstAttribute="top" secondItem="Asy-hj-Sh8" secondAttribute="top" id="n9N-l6-0ro"/>
                         <constraint firstAttribute="trailing" secondItem="a4v-2b-JUV" secondAttribute="trailing" id="w64-bX-1kp"/>
                     </constraints>
@@ -68,6 +67,7 @@
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="pBj-qY-Ivr" secondAttribute="trailing" id="SlZ-Lz-wde"/>
                         <constraint firstItem="pBj-qY-Ivr" firstAttribute="leading" secondItem="FDs-E8-dNd" secondAttribute="leading" id="d9H-tY-cHW"/>
+                        <constraint firstAttribute="height" constant="70" id="dNr-Zm-vBd"/>
                         <constraint firstAttribute="bottom" secondItem="pBj-qY-Ivr" secondAttribute="bottom" id="hA2-C0-77L"/>
                         <constraint firstItem="pBj-qY-Ivr" firstAttribute="top" secondItem="FDs-E8-dNd" secondAttribute="top" id="u3p-AI-KVE"/>
                     </constraints>
@@ -97,8 +97,8 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
-                <outlet property="fHeight" destination="di1-Nr-zDI" id="4q9-Vc-ssR"/>
-                <outlet property="sHeight" destination="kP5-pk-e24" id="CWO-l2-xvY"/>
+                <outlet property="highHeight" destination="di1-Nr-zDI" id="uW3-MP-PJ6"/>
+                <outlet property="lowHeight" destination="dNr-Zm-vBd" id="8CW-FL-QTJ"/>
             </connections>
             <point key="canvasLocation" x="96.5" y="32.5"/>
         </view>

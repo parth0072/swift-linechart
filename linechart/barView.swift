@@ -10,8 +10,8 @@ import UIKit
 
 class barView: UIView {
 
-    @IBOutlet var fHeight: NSLayoutConstraint!
+    @IBOutlet var highHeight: NSLayoutConstraint!
     
-    @IBOutlet var sHeight: NSLayoutConstraint!
+    @IBOutlet var lowHeight: NSLayoutConstraint!
     
 }

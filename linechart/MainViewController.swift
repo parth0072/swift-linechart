@@ -14,6 +14,7 @@ class MainViewController: UIViewController, LineChartDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+      
         let text = UITextField.init(frame: CGRect.init(x: 0, y: 0, width: 155, height: 30))
         text.center = self.view.center
         
@@ -29,8 +30,6 @@ class MainViewController: UIViewController, LineChartDelegate {
         view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-80-[label]", options: [], metrics: nil, views: views))
         
         // simple arrays
-        let data: [CGFloat] = [20, 12, 10, 30]
-        let data2: [CGFloat] = [1, 3, 5, 13, 17, 20]
         
         // simple line with custom x axis labels
         let xLabels: [String] = ["Jan", "Feb", "Mar", "Apr"]
@@ -46,12 +45,32 @@ class MainViewController: UIViewController, LineChartDelegate {
         lineChart.y.grid.visible = true
         lineChart.x.labels.values = xLabels
         lineChart.y.labels.visible = false
+        /*
+         },
+         "unit": "mmol/L",
+         "min": 0.161,
+         "normal_min": 5.2,
+         "normal_max": null,
+         "max": 18.26,
+         "condition": "LESS"
+         },
+         "results": [
+         {
+         "value": 4.24,
+         "created": "2016-10-07T08:00:00.000+08:00",
+         "status": 1
+         }
+        */
+        
+        let data: [CGFloat] = [4.7]
         lineChart.addLine(data)
-        lineChart.min = 10
-        lineChart.max = 20
-        lineChart.selectedValue = 20
+        
+        lineChart.maxGraph = 13
+        lineChart.minGraph = 0
+        lineChart.min = 3.5
+        lineChart.max = 7.7
+        lineChart.selectedValue = 4.7
 
-        // lineChart.addLine(data2)
         
         lineChart.translatesAutoresizingMaskIntoConstraints = false
         lineChart.delegate = self
@@ -59,20 +78,7 @@ class MainViewController: UIViewController, LineChartDelegate {
         views["chart"] = lineChart
         view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[chart]-|", options: [], metrics: nil, views: views))
         view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[label]-[chart(==200)]", options: [], metrics: nil, views: views))
-        
-//        var delta: Int64 = 4 * Int64(NSEC_PER_SEC)
-//        var time = dispatch_time(DISPATCH_TIME_NOW, delta)
-//        
-//        dispatch_after(time, dispatch_get_main_queue(), {
-//            self.lineChart.clear()
-//            self.lineChart.addLine(data2)
-//        });
-        
-//        var scale = LinearScale(domain: [0, 100], range: [0.0, 100.0])
-//        var linear = scale.scale()
-//        var invert = scale.invert()
-//        println(linear(x: 2.5)) // 50
-//        println(invert(x: 50)) // 2.5
+   
         
     }
     
